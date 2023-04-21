@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+	<title>@ViewBag.Title</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width" />
+	<link rel="stylesheet" href="~/lib/twitter-bootstrap/css/bootstrap.css" />
+	<link rel="stylesheet" href="~/css/Styles.css" />
+</head>
+<body class="bg-dark" lang="ru">
+	<div>
+		<header class="bg-dark text-white p-2 mb-3 border border-white border-2 border-top-0 border-start-0 border-end-0" style="min-height:100px">
+			<div class="container-xxl">
+				<div class="row">
+					<div class="col-3 col-md-3">
+						<p class="my-1 fw-bolder title"><span class="title-first">Cinema</span> <span class="title-gold">luxe</span></p>
+					</div>
+					<div class="col-6 col-md-6">
+						<form class="form-control bg-dark border-0">
+							<input class="form-control my-3 bg-dark border-1 border-primary text-white" placeholder="Название фильма" />
+						</form>
+					</div>
+					<div class="col-3 col-md-3">
+						<div class="d-inline">
+							<a class="btn btn-outline-light my-3 mx-1">Log in</a>
+							<a class="btn btn-outline-light my-3 mx-1" href="/SignIn">Sign in</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+		<main>
+			@RenderBody()
+		</main>
+	</div>
+
+	<script type="text/javascript" src="~/lib/twitter-bootstrap/js/bootstrap.min.js"></script>
+	<footer class="footer">
+		<div class="d-flex flex-row justify-content-center">
+			<a class="btn" href="https://t.me/astrerus">
+				<img src=~/icons/Telegram_logo.svg.webp style="width:25px;height:25px" alt="Телеграм" />
+			</a>
+			<p> </p>
+			<a class="btn" href="#">
+				<img src=~/icons/discord-icon.svg style="width:25px;height:25px" alt="Дискорд" />
+			</a>
+			<p> </p>
+			<a class="btn" href="https://vk.com/id358622660">
+				<img src=~/icons/vk-icon.png style="width:25px;height:25px" alt="ВКонтакте" />
+			</a>
+		</div>
+		<div class="d-flex flex-column">
+			<p class="text-white fs-6 align-self-center">© 2023 Artem Corpotation</p>
+			<p class="text-white fs-6 align-self-center">Copyright All Right Reserved</p>
+		</div>
+
+	</footer>
+</body>
+</html>

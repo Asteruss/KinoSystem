@@ -1,0 +1,63 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Создать аккаунт";
+    var _style = "form-control border border-2 border-light text-white bg-dark m-2";
+}
+@using KinoSystem.Models
+@model Person
+
+<div class="m-4 p-4">
+    <h2 class="text-white text-center fs-2 fw-bold mb-4">Регистрация</h2>
+    @using (Html.BeginForm("SignIn", "Home", FormMethod.Post, new { @class = "form-control border-0 bg-dark" })){
+        <div class="container">
+            <div class="row">
+                <div class="col-2">
+                    @Html.LabelFor(p => p.Name, "Имя", new { @class =_style})
+                </div>
+                <div class="col-10">
+                    @Html.TextBoxFor(p=>p.Name, "", new { @class = _style+" width-75"})
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    @Html.LabelFor(p => p.Sername, "Фамилия", new { @class =_style})
+                </div>
+                <div class="col-10">
+                    @Html.TextBoxFor(p=>p.Sername, "", new { @class = _style+" width-75"})
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    @Html.LabelFor(p => p.MiddleName, "Отчество", new { @class =_style})
+                </div>
+                <div class="col-10">
+                    @Html.TextBoxFor(p=>p.MiddleName, "", new { @class = _style+" width-75"})
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    @Html.LabelFor(p => p.Login, "Логин", new { @class =_style})
+                </div>
+                <div class="col-10">
+                    @Html.TextBoxFor(p=>p.Login, "", new { @class = _style+" width-75"})
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    @Html.LabelFor(p => p.Password, "Пароль", new { @class =_style})
+                </div>
+                <div class="col-10">
+                    @Html.PasswordFor(p=>p.Password, new { @class = _style + " width-75"})
+                </div>
+            </div>
+            <div class="d-flex flex-column">
+                <input type="submit" class="btn btn-primary form-control text-light bg-dark w-25 align-self-center mt-4" value="Зарегистрироваться" />
+            </div>
+        </div>
+    }
+</div>
+
+
