@@ -35,7 +35,7 @@ namespace KinoSystem.Models.Database
             modelBuilder.Entity<Person>().HasAlternateKey(p => p.Login);
             modelBuilder.Entity<Person>().Property(p => p.Login).IsRequired(true);
             modelBuilder.Entity<Person>().Property(p => p.Password).IsRequired(true);
-            modelBuilder.Entity<Person>().Property(p => p.AccessRight).HasDefaultValue(AccessRight.Cashier);
+            modelBuilder.Entity<Person>().Property(p => p.AccessRight).HasDefaultValue(AccessRight.Customer);
 
 
             modelBuilder.Entity<Film>().HasKey(q => q.IdFilm);

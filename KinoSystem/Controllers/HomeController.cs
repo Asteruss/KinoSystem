@@ -1,6 +1,7 @@
 ﻿using KinoSystem.Models.Database;
 using Microsoft.AspNetCore.Mvc;
 using KinoSystem.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace KinoSystem.Controllers
 {
@@ -30,9 +31,15 @@ namespace KinoSystem.Controllers
         [Route("/SignIn")]
         public async Task<IActionResult> SingIn(Person person)
         {
+            HttpContext.Session.Clear();
             if (ModelState.IsValid)
             {
                 person.AccessRight = Models.Utilities.AccessRight.Customer;
+                if (_kinoDBContext.People.Where(p => p.Login == person.Login).Count() > 0)
+                {
+                    HttpContext.Session.SetInt32("NonUniqueLogin", 1);
+                    return RedirectToAction("SignIn");
+                }
                 await _kinoDBContext!.People.AddAsync(person);
                 await _kinoDBContext!.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -40,6 +47,7 @@ namespace KinoSystem.Controllers
             }
             else
             {
+                HttpContext.Session.SetInt32("InvalidLogin", 1);
                 return RedirectToAction("SignIn");
             }
 
