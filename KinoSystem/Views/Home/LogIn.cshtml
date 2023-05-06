@@ -1,0 +1,55 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Title = "Войти в аккаунт";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var _style = "form-control border border-2 border-light text-white bg-dark m-2";
+
+}
+@using KinoSystem.Models
+@inject IHttpContextAccessor HttpContextAccessor
+@model Person
+
+<div class="m-4 p-4">
+    <h2 class="text-white text-center fs-2 fw-bold mb-4">Вход в аккаунт</h2>
+    @using (Html.BeginForm("LogIn", "Home", FormMethod.Post, new { @class = "form-control border-0 bg-dark" }))
+    {
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All"></div>
+        <div class="container">
+            @if (HttpContextAccessor.HttpContext!.Session.Keys.Contains("InvalidData"))
+            {
+                <div class="m-2 border-2 border-danger alert alert-danger bg-white d-flex align-items-center form-control">
+                    <svg class="bi flex-shrink-0 me-2" width="20" height="20" role="img"><use xlink:href="#exclamation-triangle-fill" /></svg>
+                    <div>@HttpContextAccessor.HttpContext!.Session.GetString("InvalidData")</div>
+                </div>
+            }
+            <div class="row">
+                <div class="col-2">
+                    @Html.LabelFor(p => p.Login, "Почта", new { @class = _style})
+                </div>
+                <div class="col-10">
+                    @Html.TextBoxFor(p=>p.Login, new { @class = _style + " width-75"})
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-2">
+                    @Html.LabelFor(p => p.Password, "Пароль", new { @class =_style})
+                </div>
+                <div class="col-10">
+                    @Html.PasswordFor(p=>p.Password, new { @class = _style + " width-75"})
+                </div>
+            </div>
+
+            <div class="d-flex flex-column">
+                <a class="btn btn-primary text-light bg-dark align-self-center mt-4" href="/LoginWithPhone">Войти по номеру телефона</a>
+            </div>
+            <div class="d-flex flex-column">
+                <input type="submit" class="btn btn-primary form-control text-light bg-dark w-25 align-self-center mt-4" value="Войти" />
+            </div>
+        </div>
+    }
+</div>

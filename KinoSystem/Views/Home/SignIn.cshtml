@@ -13,50 +13,61 @@
 <div class="m-4 p-4">
     <h2 class="text-white text-center fs-2 fw-bold mb-4">Регистрация</h2>
     @using (Html.BeginForm("SignIn", "Home", FormMethod.Post, new { @class = "form-control border-0 bg-dark" })){
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All"></div>
         <div class="container">
             <div class="row">
                 <div class="col-2">
-                    @Html.LabelFor(p => p.Name, "Имя", new { @class =_style})
+                    @Html.LabelFor(p => p.Name, "Имя", new { @class = _style})
                 </div>
                 <div class="col-10">
-                    @Html.TextBoxFor(p=>p.Name, "", new { @class = _style+" width-75"})
+                    @Html.TextBoxFor(p=>p.Name, new { @class = _style + " width-75"})
                 </div>
             </div>
             <div class="row">
                 <div class="col-2">
-                    @Html.LabelFor(p => p.Sername, "Фамилия", new { @class =_style})
+                    @Html.LabelFor(p => p.Sername, "Фамилия", new { @class = _style})
                 </div>
                 <div class="col-10">
-                    @Html.TextBoxFor(p=>p.Sername, "", new { @class = _style+" width-75"})
+                    @Html.TextBoxFor(p=>p.Sername, new { @class = _style + " width-75"})
                 </div>
             </div>
             <div class="row">
                 <div class="col-2">
-                    @Html.LabelFor(p => p.MiddleName, "Отчество", new { @class =_style})
+                    @Html.LabelFor(p => p.MiddleName, "Отчество", new { @class = _style})
                 </div>
                 <div class="col-10">
-                    @Html.TextBoxFor(p=>p.MiddleName, "", new { @class = _style+" width-75"})
+                    @Html.TextBoxFor(p=>p.MiddleName, new { @class = _style + " width-75"})
                 </div>
             </div>
             <div class="row">
                 <div class="col-2">
-                    @Html.LabelFor(p => p.Login, "Почта", new { @class =_style})
+                    @Html.LabelFor(p => p.PhoneNumber, "Номер телефона", new { @class = _style})
                 </div>
                 <div class="col-10">
-                    @Html.TextBoxFor(p=>p.Login, "", new { @class = _style+" width-75"})
+                    @Html.TextBoxFor(p=>p.PhoneNumber, new { @class = _style + " width-75"})
+                </div>
+            </div>
+            @if (HttpContextAccessor.HttpContext!.Session.Keys.Contains("InvalidPhoneNumber"))
+            {
+                <div class="m-2 border-2 border-danger alert alert-danger bg-white d-flex align-items-center form-control">
+                    <svg class="bi flex-shrink-0 me-2" width="20" height="20" role="img"><use xlink:href="#exclamation-triangle-fill" /></svg>
+                    <div>@HttpContextAccessor.HttpContext!.Session.GetString("InvalidPhoneNumber")</div>
+                </div>
+            }
+            <div class="row">
+                <div class="col-2">
+                    @Html.LabelFor(p => p.Login, "Почта", new { @class = _style})
+                </div>
+                <div class="col-10">
+                    @Html.TextBoxFor(p=>p.Login, new { @class = _style + " width-75"})
+
                 </div>
             </div>
             @if (HttpContextAccessor.HttpContext!.Session.Keys.Contains("InvalidLogin")){
                 <div class="m-2 border-2 border-danger alert alert-danger bg-white d-flex align-items-center form-control">
                     <svg class="bi flex-shrink-0 me-2" width="20" height="20" role="img"><use xlink:href="#exclamation-triangle-fill" /></svg>
-                    <div>Почта введена неправильно</div>
-                </div>
-            }
-            @if (HttpContextAccessor.HttpContext!.Session.Keys.Contains("NonUniqueLogin"))
-            {
-                <div class="m-2 border-2 border-danger alert alert-danger bg-white d-flex align-items-center form-control">
-                    <svg class="bi flex-shrink-0 me-2" width="20" height="20" role="img"><use xlink:href="#exclamation-triangle-fill" /></svg>
-                    <div>Пользователь с такой почтой уже зарегистрирован</div>
+                    <div>@HttpContextAccessor.HttpContext!.Session.GetString("InvalidLogin")</div>
                 </div>
             }
             <div class="row">
@@ -71,9 +82,10 @@
             {
                 <div class="m-2 border-2 border-danger alert alert-danger bg-white d-flex align-items-center form-control">
                     <svg class="bi flex-shrink-0 me-2" width="20" height="20" role="img"><use xlink:href="#exclamation-triangle-fill" /></svg>
-                    <div>Пароль не введен</div>
+                    <div>@HttpContextAccessor.HttpContext!.Session.GetString("InvalidPassword")</div>
                 </div>
             }
+
             <div class="d-flex flex-column">
                 <input type="submit" class="btn btn-primary form-control text-light bg-dark w-25 align-self-center mt-4" value="Зарегистрироваться" />
             </div>
