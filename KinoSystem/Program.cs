@@ -15,11 +15,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 builder.Services.AddAuthorization();
 
-string connection = builder.Configuration.GetConnectionString("DefaultConnection")!;
+string connection = builder.Configuration.GetConnectionString("ConnectionLesson")!;
 builder.Services.AddDbContext<KinoDBContext>(options => options.UseSqlServer(connection));
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
+
 
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();

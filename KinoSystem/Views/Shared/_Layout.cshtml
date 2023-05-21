@@ -1,5 +1,7 @@
 ﻿<!DOCTYPE html>
 
+@inject IHttpContextAccessor HttpContextAccessor
+
 <html>
 <head>
 	<title>@ViewBag.Title</title>
@@ -23,7 +25,7 @@
 			</symbol>
 		</svg>
 		<header class="bg-dark text-white p-2 mb-3 border border-white border-2 border-top-0 border-start-0 border-end-0" style="min-height:100px">
-			<div class="container-xxl">
+			<div class="container-fluid">
 				<div class="row">
 					<div class="col-3 col-md-3">
 						<p class="my-1 fw-bolder title"><span class="title-first">Cinema</span> <span class="title-gold">luxe</span></p>
@@ -33,19 +35,41 @@
 							<input class="form-control my-3 bg-dark border-1 border-primary text-white" placeholder="Название фильма" />
 						</form>
 					</div>
-					<div class="col-3 col-md-3">
+					<div class="col-3 col-md-3 justify-content-end">
 						<div class="d-inline">
-							
-							<a class="btn btn-outline-light my-3 mx-1" href="/LogIn">Log in</a>
-							<a class="btn btn-outline-light my-3 mx-1" href="/SignIn">Sign in</a>
+							@if (HttpContextAccessor.HttpContext!.User.Identity.IsAuthenticated == false){
+								<a class="btn btn-outline-light my-3 mx-1" href="/LogIn">Log in</a>
+								<a class="btn btn-outline-light my-3 mx-1" href="/SignIn">Sign in</a>
+							}
+							else{
+								<a class="btn btn-outline-light my-3 mx-1" href="/SignOut" >Sign out</a>
+							}
 						</div>
 					</div>
 				</div>
 			</div>
 		</header>
-		<main>
-			@RenderBody()
-		</main>
+		<div class="container-fluid">
+			<div class="row">
+				<article class="col-2 col-md-2 border-1 border-white border-top-0 border-start-0">
+					<h5 class="text-white fs-20">Фильмы</h5>
+					<br/>
+					<nav class="navbar navbar-dark bg-dark">
+							<ul class ="navbar-nav">
+								@for (int i = 0;i<5;i++){
+									<li class ="nav-item active">
+										<a class ="nav-link" href="film/@i">@i</a>
+									</li>
+								}
+							</ul>
+					</nav>
+				</article>
+				<main class="col-10 col-md-10">
+					@RenderBody()
+				</main>
+			</div>
+		</div>
+		
 	</div>
 
 	<script type="text/javascript" src="~/lib/twitter-bootstrap/js/bootstrap.min.js"></script>

@@ -2,6 +2,7 @@
     font-size: 48px;
     font-family: Lucida Sans;
 }
+
 .title-first {
     background: rgb(237,0,247);
     background: linear-gradient(128deg, rgba(237,0,247,1) 0%, rgba(210,11,40,1) 40%, rgba(255,239,0,1) 100%);

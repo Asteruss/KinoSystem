@@ -1,8 +1,6 @@
 ﻿using KinoSystem.Models.Database;
 using Microsoft.AspNetCore.Mvc;
 using KinoSystem.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
@@ -83,6 +81,7 @@ namespace KinoSystem.Controllers
         
         public async Task<IActionResult> LogIn(Person person)
         {
+            HttpContext.Session.Clear();
             var pn = await _kinoDBContext.People.AsNoTracking().Where(p => p.Login == person.Login).FirstAsync();
             if (pn == null)
                 HttpContext.Session.SetString("InvalidData", "Такого аккаунта не существует");
@@ -90,7 +89,6 @@ namespace KinoSystem.Controllers
                 HttpContext.Session.SetString("InvalidData", "Неверная почта или пароль");
             else
             {
-
                 var claims = new List<Claim>
                     {
                         new Claim(ClaimsIdentity.DefaultNameClaimType, person.Login),
@@ -101,12 +99,28 @@ namespace KinoSystem.Controllers
                 return RedirectToAction("Index");
             }
             return RedirectToAction("LogIn");
-
+            
 
         }
         [Authorize(Roles = "Administrator")]
         [Route("/test")]
         [HttpGet]
         public IActionResult Test() => StatusCode(200);
+
+        [Authorize]
+        [Route("/signout")]
+        [HttpGet]
+        public async Task<IActionResult> SignOut()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index");
+
+        }
+        [HttpGet]
+        [Route("film/{film}")]
+        public IActionResult Film(string film)
+        {
+            return Content(film);
+        }
     }
 }
