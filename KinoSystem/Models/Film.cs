@@ -5,7 +5,7 @@
         public int IdFilm { get; set; }
         public string? Title { get; set; }
         public int? AgeRating { get; set;}
-        public int? Rating { get; set;}
+        public double? Rating { get; set;}
         public int? MovieLength { get; set; }
         public int? ReleaseYear { get; set; }
         public string? UrlPoster { get; set; }

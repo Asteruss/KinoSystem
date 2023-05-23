@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using KinoSystem.Models.Utilities;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace KinoSystem.Controllers
 {
@@ -18,6 +20,8 @@ namespace KinoSystem.Controllers
             _logger = logger;
             _kinoDBContext = db;
 
+            Utililies.LoadMovies(_kinoDBContext);
+
         }
         [Route("/")]
         [Route("/Index")]
@@ -29,9 +33,9 @@ namespace KinoSystem.Controllers
         }
         [HttpGet]
         [Route("/SignIn")]
-        public IActionResult SignIn() => 
+        public IActionResult SignIn() =>
              View((TempData["PersonSignIn"] != null) ? Newtonsoft.Json.JsonConvert.DeserializeObject<Person>(TempData["PersonSignIn"]!.ToString()) : null);
-        
+
         [HttpPost]
         [Route("/SignIn")]
         public async Task<IActionResult> SingIn(Person person)
@@ -74,32 +78,36 @@ namespace KinoSystem.Controllers
         }
         [HttpGet]
         [Route("/login")]
-        public IActionResult LogIn() 
+        public IActionResult LogIn()
             => View();
         [HttpPost]
         [Route("/login")]
-        
+
         public async Task<IActionResult> LogIn(Person person)
         {
             HttpContext.Session.Clear();
-            var pn = await _kinoDBContext.People.AsNoTracking().Where(p => p.Login == person.Login).FirstAsync();
-            if (pn == null)
+            var pnL = _kinoDBContext.People.AsNoTracking().Where(p => p.Login == person.Login);
+            if (pnL.Count() == 0)
+            {
                 HttpContext.Session.SetString("InvalidData", "Такого аккаунта не существует");
-            else if (pn.Password != person.Password)
+                return RedirectToAction("LogIn");
+            }
+            var pn = await pnL.FirstAsync();
+            if (pn.Password != person.Password)
                 HttpContext.Session.SetString("InvalidData", "Неверная почта или пароль");
             else
             {
                 var claims = new List<Claim>
                     {
-                        new Claim(ClaimsIdentity.DefaultNameClaimType, person.Login),
-                        new Claim(ClaimsIdentity.DefaultRoleClaimType, person.AccessRight.ToString())
+                        new Claim(ClaimsIdentity.DefaultNameClaimType, pn.Login),
+                        new Claim(ClaimsIdentity.DefaultRoleClaimType, pn.AccessRight.ToString())
                     };
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
                 return RedirectToAction("Index");
             }
             return RedirectToAction("LogIn");
-            
+
 
         }
         [Authorize(Roles = "Administrator")]
@@ -116,11 +124,33 @@ namespace KinoSystem.Controllers
             return RedirectToAction("Index");
 
         }
+        [Route("/accessdenied")]
         [HttpGet]
-        [Route("film/{film}")]
-        public IActionResult Film(string film)
+        public IActionResult AccessDenied() => View();
+        [HttpGet]
+        [Route("film/{idFilm:int}")]
+        public async Task<IActionResult> Film(int idFilm)
         {
-            return Content(film);
+            return View(model: await Utililies.GetMovieByIdAsync(_kinoDBContext, idFilm));
+        }
+        [HttpGet]
+        [Route("film/buyticket/{idFilm:int}")]
+        public IActionResult BuyTicket(int idFilm)
+        {
+            return Content(idFilm.ToString());
+        }
+        [Authorize(Roles = "Administrator")]
+        [HttpGet]
+        [Route("/session/edit")]
+        public IActionResult EditSession()
+        {
+            return View();
+        }
+        [HttpGet]
+        [Route("/session/view")]
+        public IActionResult ViewSession()
+        {
+            return View();
         }
     }
 }

@@ -22,3 +22,8 @@ body {
     display: grid;
     grid-template-rows: 1fr auto;
 }
+
+.movie-title{
+    font-size: 50px;
+    font-weight: bold;
+}
