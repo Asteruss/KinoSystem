@@ -23,6 +23,8 @@ namespace KinoSystem.Models
         public AccessRight AccessRight { get; set; }
         public int? Salary { get; set; }
         public DateTime? HiringTime { get; set; }
+        public int? SoldTickets { get; set; }
         public List<Seat> Seats { get; set; } = new();
+        public List<Purhaces> Purhaces { get; set; } = new();
     }
 }

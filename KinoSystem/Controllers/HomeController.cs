@@ -141,15 +141,21 @@ namespace KinoSystem.Controllers
         }
         [Authorize(Roles = "Administrator")]
         [HttpGet]
-        [Route("/session/edit")]
-        public IActionResult EditSession()
+        [Route("/schedule/edit")]
+        public IActionResult EditSchedule([FromQuery] DateTime date)
         {
+            if (date.Year == 1)
+                date = DateTime.Now;
+            TempData["date"] = date.ToLongDateString();
             return View();
         }
         [HttpGet]
-        [Route("/session/view")]
-        public IActionResult ViewSession()
+        [Route("/schedule/view")]
+        public IActionResult ViewSchedule([FromQuery] DateTime date)
         {
+            if (date.Year == 1)
+                date = DateTime.Now;
+            TempData["date"] = date.ToLongDateString();
             return View();
         }
     }

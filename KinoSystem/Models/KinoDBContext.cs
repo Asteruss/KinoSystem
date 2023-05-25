@@ -14,8 +14,10 @@ namespace KinoSystem.Models.Database
         public DbSet<Session> Sessions { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Actor> Actors { get; set; }
+        public DbSet<Purhaces> Purhaces { get; set; }
         public KinoDBContext(DbContextOptions<KinoDBContext> options) : base(options)
         {
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -40,6 +42,7 @@ namespace KinoSystem.Models.Database
 
             modelBuilder.Entity<Film>().HasKey(q => q.IdFilm);
             modelBuilder.Entity<Film>().Property(q => q.IdFilm).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Film>().Property(q => q.InRental).HasDefaultValue(false);
 
             modelBuilder.Entity<Session>().HasKey(q => q.IdSesstion);
             modelBuilder.Entity<Session>().Property(q => q.IdSesstion).ValueGeneratedOnAdd();
@@ -50,6 +53,10 @@ namespace KinoSystem.Models.Database
             modelBuilder.Entity<Actor>().HasKey(q => q.IdActor);
             modelBuilder.Entity<Actor>().Property(q => q.IdActor).ValueGeneratedOnAdd();
 
+            modelBuilder.Entity<Purhaces>().HasKey(q => q.IdPurchace);
+            modelBuilder.Entity<Purhaces>().Property(q => q.IdPurchace).ValueGeneratedOnAdd();
+
+
             modelBuilder.Entity<Film>().HasMany(f => f.Actors).WithMany(a => a.Films).UsingEntity("FilmsAndActors");
             modelBuilder.Entity<Seat>().HasOne(r => r.Row).WithMany(s => s.Seats).HasForeignKey(s => s.IdRow).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Row>().HasOne(r => r.Hall).WithMany(h => h.Rows).HasForeignKey(r => r.IdHall).OnDelete(DeleteBehavior.Cascade);
@@ -57,6 +64,14 @@ namespace KinoSystem.Models.Database
             modelBuilder.Entity<Session>().HasOne(s => s.Film).WithMany(f => f.Sessions).HasForeignKey(s => s.IdFilm).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Schedule>().HasOne(s => s.Session).WithOne(s => s.Schedule).HasForeignKey<Schedule>(s => s.IdSchedule).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Seat>().HasOne(s => s.Person).WithMany(p => p.Seats).HasForeignKey(s => s.IdPerson).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Purhaces>().HasOne(p => p.Person).WithMany(p => p.Purhaces).HasForeignKey(p => p.IdPerson).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Purhaces>().HasOne(p => p.Session).WithMany(p => p.Purhaces).HasForeignKey(p => p.IdSession).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Person>().HasData(new Person[] {
+                new Person(){IdPerson = 1, Name="sdf", Sername="sdf", MiddleName="sdf", Login="asd@mail.ru", Password="asd", AccessRight=AccessRight.Customer},
+                new Person(){IdPerson = 2, Name="cas", Sername="cas", MiddleName="cas", Login="cas@mail.ru", Password="cas", AccessRight=AccessRight.Cashier},
+                new Person(){IdPerson = 3, Name="admin", Sername="admin", MiddleName="admin", Login="admin@mail.ru", Password="admin", AccessRight=AccessRight.Administrator},
+            });
 
             
         }

@@ -1,0 +1,69 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = "Расписание";
+}
+@using KinoSystem.Models;
+@using KinoSystem.Models.Utilities;
+@inject KinoSystem.Models.Database.KinoDBContext db;
+@model Session
+<div class="m-4 p-4">
+	<form class="bg-dark">
+		<p class="form-control text-white bg-dark border-0">Выберите дату</p> <input type="date" class="form-control m-2" onchange="SetDate()" id="inputdate" style="width:300px" value="@TempData["date"]" />
+	</form>
+	<p class="text-white fs-3" id="pdate">@TempData["date"]</p>
+	<form class="form-control bg-dark border-0">
+		<div class="container-fluid bg-dark">
+			@foreach (var session in await Utililies.GetSessionsByDateAsync(db, DateTime.Parse(TempData["date"].ToString())))
+			{
+				<div class="row">
+
+					<div class="col-4 col-md-4">
+						<p class="text-white bg-dark">@session.Start</p>
+					</div>
+					<div class="col-8 col-md-8">
+						<p class="text-white bg-dark">@session.Session.Film.Title</p>
+
+					</div>
+				</div>
+			}
+		</div>
+		<div class="row">
+
+			<div class="col-4 col-md-4">
+				<input class="form-control" type="time" />
+			</div>
+			<div class="col-8 col-md-8">
+				<select class="form-select" aria-label="Default select example" >
+					@foreach (var movie in await Utililies.GetRentalMoviesAsync(db))
+					{
+					<option value="@movie.IdFilm">@movie.Title</option>
+
+					}
+				</select>
+
+
+			</div>
+			<div class="d-flex flex-column">
+				<input type="submit" class="btn btn-outline-primary form-control w-25 align-self-center mt-4" value="Добавить" />
+			</div>
+		</div>
+
+	</form>
+	<script type="text/javascript">
+
+		function SetDate() {
+			var url = new URL(window.location.href);
+			var search_params = url.searchParams;
+			var date = document.getElementById("inputdate").value;
+			console.log(date);
+			search_params.set('date', date);
+			url.search = search_params.toString();
+			console.log(url);
+			window.location = url;
+		}
+
+	</script>
+</div>

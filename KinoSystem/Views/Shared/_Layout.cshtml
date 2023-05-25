@@ -61,7 +61,7 @@
 
 				@if (HttpContextAccessor.HttpContext!.User.Identity.IsAuthenticated == true && HttpContextAccessor.HttpContext!.User.FindFirst(ClaimsIdentity.DefaultRoleClaimType).Value == "Administrator")
 				{
-						<a class="btn btn-light text-dark mt-2" style="width:250px" href="../session/edit">Добавить фильм в расписание</a>
+						<a class="btn btn-light text-dark mt-2" style="width:250px" href="../schedule/edit">Добавить фильм в расписание</a>
 						<a class="btn btn-light text-dark mt-2" style="width:250px">Просмотреть доходы</a>
 
 				}
@@ -83,7 +83,7 @@
 
 					
 				}
-					<a class="btn btn-light text-dark mt-2" style="width:250px" href="../session/view">Открыть расписание</a>
+					<a class="btn btn-light text-dark mt-2" style="width:250px" href="../schedule/view">Открыть расписание</a>
 				
 				</article>
 
@@ -103,7 +103,7 @@
 				<img src=~/icons/Telegram_logo.svg.webp style="width:25px;height:25px" alt="Телеграм" />
 			</a>
 			<p> </p>
-			<a class="btn" href="#">
+			<a class="btn" href="https://discord.gg/nhK4pKnR">
 				<img src=~/icons/discord-icon.svg style="width:25px;height:25px" alt="Дискорд" />
 			</a>
 			<p> </p>

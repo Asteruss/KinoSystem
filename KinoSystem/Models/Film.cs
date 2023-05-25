@@ -11,6 +11,7 @@
         public string? UrlPoster { get; set; }
         public string? Genres { get; set; }
         public string? Description { get; set; }
+        public bool? InRental { get; set; }
         public List<Actor> Actors { get; set; }
         public List<Session> Sessions { get; set; } = new();
     }

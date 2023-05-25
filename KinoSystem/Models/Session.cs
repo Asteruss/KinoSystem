@@ -9,5 +9,6 @@
         public Film? Film { get; set; }
         public Hall? Hall { get; set; }
         public Schedule? Schedule { get; set; }
+        public List<Purhaces> Purhaces { get; set; } = new();
     }
 }

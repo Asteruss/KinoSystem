@@ -1,6 +1,7 @@
 ﻿using KinoSystem.Models.Database;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using System.Collections.Generic;
 
 namespace KinoSystem.Models.Utilities
 {
@@ -27,10 +28,9 @@ namespace KinoSystem.Models.Utilities
     }
     public class Utililies
     {
-        public static List<Film> Get5Movies(KinoDBContext db)
-        {
-            return db.Films.Take(5).ToList();
-        }
+        public static List<Film> Get5Movies(KinoDBContext db) =>
+           db.Films.Take(5).ToList();
+        
         public async static Task<Film?> GetMovieByIdAsync(KinoDBContext db, int idMovie) =>(db.Films.Any(m => m.IdFilm == idMovie))? await db.Films.Where(m => m.IdFilm == idMovie).FirstAsync(): null;
         public static Hall GetHall(HallType type)
         {
@@ -48,6 +48,11 @@ namespace KinoSystem.Models.Utilities
             return hall;
 
         }
+        public async static Task<List<Schedule?>> GetSessionsByDateAsync(KinoDBContext db, DateTime date) =>
+            await db.Schedules.Include(s => s.Session).Include(s => s.Session.Film).Where(s => s.Start == date).ToListAsync();
+        public async static Task<List<Film?>> GetRentalMoviesAsync(KinoDBContext db) =>
+            await db.Films.Where(f => f.InRental == true).ToListAsync();
+        
         public async static void LoadMovies(KinoDBContext db)
         {
             if (db.Films.Count() > 0)
