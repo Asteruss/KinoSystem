@@ -8,18 +8,27 @@
 @using KinoSystem.Models;
 @using KinoSystem.Models.Utilities;
 @inject KinoSystem.Models.Database.KinoDBContext db;
-@model Session
+@inject IHttpContextAccessor HttpContextAccessor
+@model AddSession
 <div class="m-4 p-4">
 	<form class="bg-dark">
 		<p class="form-control text-white bg-dark border-0">Выберите дату</p> <input type="date" class="form-control m-2" onchange="SetDate()" id="inputdate" style="width:300px" value="@TempData["date"]" />
 	</form>
-	<p class="text-white fs-3" id="pdate">@TempData["date"]</p>
-	<form class="form-control bg-dark border-0">
+	<p class="text-white fs-3">@TempData["date"]</p>
+
+	<form class="form-control bg-dark border-0" asp-action="EditSchedule" method="post">
+		@if (HttpContextAccessor.HttpContext!.Session.Keys.Contains("SuccessAdd"))
+		{
+			<div class="m-2 border-2 border-success alert alert-success bg-white d-flex align-items-center form-control">
+				<svg class="bi flex-shrink-0 me-2" width="20" height="20" role="img"><use xlink:href="#check-circle-fill" /></svg>
+				<div>@HttpContextAccessor.HttpContext!.Session.GetString("SuccessAdd")</div>
+			</div>
+		}
 		<div class="container-fluid bg-dark">
 			@foreach (var session in await Utililies.GetSessionsByDateAsync(db, DateTime.Parse(TempData["date"].ToString())))
 			{
 				<div class="row">
-
+ 
 					<div class="col-4 col-md-4">
 						<p class="text-white bg-dark">@session.Start</p>
 					</div>
@@ -30,27 +39,62 @@
 				</div>
 			}
 		</div>
-		<div class="row">
 
-			<div class="col-4 col-md-4">
-				<input class="form-control" type="time" />
-			</div>
-			<div class="col-8 col-md-8">
-				<select class="form-select" aria-label="Default select example" >
+		<dl class="row">
+			<dt class="col-3 col-md-3 mt-2 text-white">
+				Время
+			</dt>
+			<dd class="col-9 col-md-9 mt-2">
+				<input class="form-control" type="time" asp-for="Time"/>
+
+			</dd>
+			<dt class="col-3 col-md-3 mt-2 text-white">
+				Фильм
+			</dt>
+			<dd class="col-9 col-md-9 mt-2">
+				<select class="form-select" aria-label="Default select example" required asp-for="IdMovie">
 					@foreach (var movie in await Utililies.GetRentalMoviesAsync(db))
 					{
-					<option value="@movie.IdFilm">@movie.Title</option>
+					<option value="@movie.IdFilm" >@movie.Title</option>
 
 					}
 				</select>
 
-
+			</dd>
+			<dt class="col-3 col-md-3 mt-2 text-white">
+				Цена
+			</dt>
+			<dd class="col-9 col-md-9 mt-2">
+				<input type="text" asp-for="Price" value="0"/>
+			</dd>
+			<dt class="col-3 col-md-3 mt-2 text-white">
+				Зал
+			</dt>
+			<dd class="col-9 col-md-9 mt-2">
+				<select class="form-select" required asp-for="HallType">
+					<option value=@HallType.Big>Большой</option>
+					<option value=@HallType.Middle>Средний</option>
+					<option value=@HallType.Small>Маленький</option>
+				</select>
+			</dd>
+		</dl>
+		@if (HttpContextAccessor.HttpContext!.Session.Keys.Contains("InvalidTime"))
+		{
+			<div class="m-2 border-2 border-danger alert alert-danger bg-white d-flex align-items-center form-control">
+				<svg class="bi flex-shrink-0 me-2" width="20" height="20" role="img"><use xlink:href="#exclamation-triangle-fill" /></svg>
+				<div>@HttpContextAccessor.HttpContext!.Session.GetString("InvalidTime")</div>
 			</div>
-			<div class="d-flex flex-column">
-				<input type="submit" class="btn btn-outline-primary form-control w-25 align-self-center mt-4" value="Добавить" />
+		}
+		@if (HttpContextAccessor.HttpContext!.Session.Keys.Contains("InvalidPrice"))
+		{
+			<div class="m-2 border-2 border-danger alert alert-danger bg-white d-flex align-items-center form-control">
+				<svg class="bi flex-shrink-0 me-2" width="20" height="20" role="img"><use xlink:href="#exclamation-triangle-fill" /></svg>
+				<div>@HttpContextAccessor.HttpContext!.Session.GetString("InvalidPrice")</div>
 			</div>
+		}
+		<div class="d-flex flex-column">
+			<input type="submit" class="btn btn-outline-primary form-control w-25 align-self-center mt-4" value="Добавить" />
 		</div>
-
 	</form>
 	<script type="text/javascript">
 
@@ -58,10 +102,8 @@
 			var url = new URL(window.location.href);
 			var search_params = url.searchParams;
 			var date = document.getElementById("inputdate").value;
-			console.log(date);
 			search_params.set('date', date);
 			url.search = search_params.toString();
-			console.log(url);
 			window.location = url;
 		}
 

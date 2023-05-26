@@ -147,7 +147,43 @@ namespace KinoSystem.Controllers
             if (date.Year == 1)
                 date = DateTime.Now;
             TempData["date"] = date.ToLongDateString();
+            HttpContext.Session.SetString("date", date.ToString());
+            HttpContext.Session.Remove("SuccessAdd");
+
             return View();
+        }
+        [Authorize(Roles = "Administrator")]
+        [HttpPost]
+        [Route("/schedule/edit")]
+        public async Task<IActionResult> EditSchedule(AddSession addsession)
+        {
+            if (addsession.Time.Year == 1)           
+                HttpContext.Session.SetString("InvalidTime", "Вы не выбрали время");           
+            if (addsession.Price == 0)         
+                HttpContext.Session.SetString("InvalidPrice", "Вы не ввели цену");     
+            else
+            {
+                Session session = new Session();
+                var movie = await Utililies.GetMovieByIdAsync(_kinoDBContext, addsession.IdMovie);
+                session.Film = movie;
+                session.Hall = Utililies.GetHall(addsession.HallType);
+                session.Price = addsession.Price;
+                await _kinoDBContext.Sessions.AddAsync(session);
+                await _kinoDBContext.SaveChangesAsync();
+                Schedule schedule = new Schedule();
+                schedule.Session = session;
+                //schedule.IdSession = session.IdSesstion;
+                var date = DateTime.Parse(HttpContext.Session.GetString("date"));
+                var start = new DateTime(date.Year, date.Month, date.Day, addsession.Time.Hour, addsession.Time.Minute, addsession.Time.Second);
+                schedule.Start = start;
+                var end = start.AddMinutes(double.Parse(movie.MovieLength.ToString()));
+                schedule.End = end;
+                HttpContext.Session.SetString("SuccessAdd", "фильм добавлен");
+
+                await _kinoDBContext.Schedules.AddAsync(schedule);
+                await _kinoDBContext.SaveChangesAsync();
+            }
+            return RedirectToAction("EditSchedule");
         }
         [HttpGet]
         [Route("/schedule/view")]
@@ -156,6 +192,7 @@ namespace KinoSystem.Controllers
             if (date.Year == 1)
                 date = DateTime.Now;
             TempData["date"] = date.ToLongDateString();
+            HttpContext.Session.SetString("date", date.ToString());
             return View();
         }
     }

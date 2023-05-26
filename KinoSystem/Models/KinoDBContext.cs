@@ -62,7 +62,7 @@ namespace KinoSystem.Models.Database
             modelBuilder.Entity<Row>().HasOne(r => r.Hall).WithMany(h => h.Rows).HasForeignKey(r => r.IdHall).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Hall>().HasOne(h => h.Session).WithOne(s => s.Hall).HasForeignKey<Session>(s => s.IdHall).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Session>().HasOne(s => s.Film).WithMany(f => f.Sessions).HasForeignKey(s => s.IdFilm).OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Schedule>().HasOne(s => s.Session).WithOne(s => s.Schedule).HasForeignKey<Schedule>(s => s.IdSchedule).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Schedule>().HasOne(s => s.Session).WithOne(s => s.Schedule).HasForeignKey<Schedule>(s => s.IdSession).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Seat>().HasOne(s => s.Person).WithMany(p => p.Seats).HasForeignKey(s => s.IdPerson).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Purhaces>().HasOne(p => p.Person).WithMany(p => p.Purhaces).HasForeignKey(p => p.IdPerson).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Purhaces>().HasOne(p => p.Session).WithMany(p => p.Purhaces).HasForeignKey(p => p.IdSession).OnDelete(DeleteBehavior.Cascade);

@@ -8,8 +8,8 @@ namespace KinoSystem.Models.Utilities
     public enum HallType
     {
         Big = 1,
-        Middle = 3,
-        Small = 2
+        Middle = 2,
+        Small = 3
     }
     public enum AccessRight
     {
@@ -36,7 +36,9 @@ namespace KinoSystem.Models.Utilities
         {
             int rowCount = (type == HallType.Big) ? 25 : (type == HallType.Middle) ? 20 : 15;
             int seatCount = (type == HallType.Big) ? 30 : (type == HallType.Middle) ? 25 : 20;
+            string hallName = (type == HallType.Big) ? "Большой" : (type == HallType.Middle) ? "Средний" : "Маленький";
             Hall hall = new Hall();
+            hall.NameHall = hallName;
             for (int i = 0; i < rowCount; i++)
             {
                 Row row = new Row() { Hall = hall, Number = i + 1 };
@@ -49,7 +51,7 @@ namespace KinoSystem.Models.Utilities
 
         }
         public async static Task<List<Schedule?>> GetSessionsByDateAsync(KinoDBContext db, DateTime date) =>
-            await db.Schedules.Include(s => s.Session).Include(s => s.Session.Film).Where(s => s.Start == date).ToListAsync();
+            await db.Schedules.Include(s => s.Session).Include(s => s.Session.Film).Include(s => s.Session.Hall).Where(s => s.Start.Value.Year == date.Year && s.Start.Value.Month == date.Month && s.Start.Value.Day == date.Day).ToListAsync();
         public async static Task<List<Film?>> GetRentalMoviesAsync(KinoDBContext db) =>
             await db.Films.Where(f => f.InRental == true).ToListAsync();
         

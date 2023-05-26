@@ -5,27 +5,52 @@
 @using KinoSystem.Models;
 @using KinoSystem.Models.Utilities;
 @inject KinoSystem.Models.Database.KinoDBContext db;
+@inject IHttpContextAccessor HttpContextAccessor
+
 <div class="m-4 p-4">
     <form class="bg-dark">
         <p class="form-control text-white bg-dark border-0">Выберите дату</p> <input type="date" class="form-control m-2" onchange="SetDate()" id="inputdate" style="width:300px" value="@TempData["date"]" />
     </form>
     <p class="text-white fs-3" id="pdate">@TempData["date"]</p>
-    <div class="container-fluid">
-        @foreach (var session in await Utililies.GetSessionsByDateAsync(db, DateTime.Parse(TempData["date"].ToString()))){
-            <div class="row">
+    <div class="container-fluid bg-dark">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="text-white">Время начала</th>
+                        <th class="text-white">Фильм</th>
+                        <th class="text-white">Зал</th>
+                        <th class="text-white">Цена</th>
+                        <th class="text-white">Купить</th>
+
+                    </tr>
+                </thead>
+            <tbody>
+
+        @foreach (var session in await Utililies.GetSessionsByDateAsync(db, DateTime.Parse(TempData["date"].ToString())))
+        {
+                    <tr>
+                        <td class="text-white">@session.Start</td>
+                        <td class="text-white">@session.Session.Film.Title</td>
+                        <td class="text-white">@session.Session.Hall.NameHall зал</td>
+                        <td class="text-white">@session.Session.Price рублей</td>
+                        <td class="text-white"><a class="btn btn-success" href="../film/buyticket/@session.Session.Film.IdFilm">Купить билет</a></td>
+                    </tr>                    
+               
+            @*<div class="row">
 
                 <div class="col-4 col-md-4">
-                    @session.Start
+                    <p class="text-white bg-dark">@session.Start</p>
                 </div>
                 <div class="col-8 col-md-8">
-                    @session.Session.Film.Title
+                    <p class="text-white bg-dark">@session.Session.Film.Title</p>
 
                 </div>
-            </div>
+            </div>*@
         }
-        
-
+            </tbody>
+        </table>
     </div>
+
     <script type="text/javascript">
 
         function SetDate(){
