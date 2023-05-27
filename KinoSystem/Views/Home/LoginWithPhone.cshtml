@@ -6,4 +6,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var _style = "form-control border border-2 border-light text-white bg-dark m-2";
 }
-    <h3 class="text-white">Hello</h3>
+@using KinoSystem.Models
+@inject IHttpContextAccessor HttpContextAccessor
+@model Person
+<div class="m-4 p-4">
+    <h2 class="text-white text-center fs-2 fw-bold mb-4">Вход в аккаунт</h2>
+    
+</div>

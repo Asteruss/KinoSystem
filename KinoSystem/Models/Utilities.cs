@@ -50,6 +50,14 @@ namespace KinoSystem.Models.Utilities
             return hall;
 
         }
+        public async static Task<List<Purhaces>> GetLastPurchacesAsync(KinoDBContext db, int count) =>
+            await db.Purhaces.Include(p => p.Person).Include(p => p.Session).ThenInclude(s => s.Film).ToListAsync();
+        public async static Task<Person> GetPersonByIdAsync(KinoDBContext db, int idPerson) =>
+            await db.People.Where(p => p.IdPerson == idPerson).FirstOrDefaultAsync();
+        public async static Task<List<Seat>> GetSeatsByIdsAsync(KinoDBContext db, List<int> ids)=>
+            await db.Seats.Include(s => s.Person).Where(s => ids.Contains(s.IdSeat)==true).ToListAsync();
+        public async static Task<Session?> GetSessionByIdAsync(KinoDBContext db, int idSession) =>
+            await db.Sessions.Include(s => s.Film).Include(s => s.Hall).Include(s => s.Hall.Rows).Include(s => s.Hall.Rows).ThenInclude(r => r.Seats).ThenInclude(s => s.Person).Where(s => s.IdSesstion == idSession).FirstOrDefaultAsync();
         public async static Task<List<Schedule?>> GetSessionsByDateAsync(KinoDBContext db, DateTime date) =>
             await db.Schedules.Include(s => s.Session).Include(s => s.Session.Film).Include(s => s.Session.Hall).Where(s => s.Start.Value.Year == date.Year && s.Start.Value.Month == date.Month && s.Start.Value.Day == date.Day).ToListAsync();
         public async static Task<List<Film?>> GetRentalMoviesAsync(KinoDBContext db) =>
@@ -63,7 +71,7 @@ namespace KinoSystem.Models.Utilities
             using (var stream = new StreamReader("C:\\Users\\Artem\\Desktop\\python\\movies.txt"))
             {
                 var data = stream.ReadToEnd();
-                var data_lines = data.Split("\r\n");
+                var data_lines = data.Split("|||");
                 foreach (var line in data_lines)
                 {
                     if (string.IsNullOrEmpty(line) || string.IsNullOrWhiteSpace(line))

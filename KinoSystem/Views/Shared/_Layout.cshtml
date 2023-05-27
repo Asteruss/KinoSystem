@@ -42,12 +42,12 @@
 						<div class="d-inline">
 							@if (HttpContextAccessor.HttpContext!.User.Identity.IsAuthenticated == false)
 							{
-								<a class="btn btn-outline-light my-3 mx-1" href="../LogIn">Log in</a>
-								<a class="btn btn-outline-light my-3 mx-1" href="../SignIn">Sign in</a>
+								<a class="btn btn-outline-light my-3 mx-1" href="../LogIn">Войти</a>
+								<a class="btn btn-outline-light my-3 mx-1" href="../SignIn">Зарегистрироваться</a>
 							}
 							else
 							{
-								<a class="btn btn-outline-light my-3 mx-1" href="../SignOut">Sign out</a>
+								<a class="btn btn-outline-light my-3 mx-1" href="../../SignOut">Выйти</a>
 							}
 						</div>
 					</div>
@@ -62,16 +62,16 @@
 				@if (HttpContextAccessor.HttpContext!.User.Identity.IsAuthenticated == true && HttpContextAccessor.HttpContext!.User.FindFirst(ClaimsIdentity.DefaultRoleClaimType).Value == "Administrator")
 				{
 						<a class="btn btn-light text-dark mt-2" style="width:250px" href="../schedule/edit">Добавить фильм в расписание</a>
-						<a class="btn btn-light text-dark mt-2" style="width:250px">Просмотреть доходы</a>
+						<a class="btn btn-light text-dark mt-2" style="width:250px" href="../statistics">Просмотреть доходы</a>
 
 				}
 				else
 				{
-						<h5 class="text-white fs-20">Фильмы</h5>
+						<h5 class="text-white fs-20">Фильмы в прокате</h5>
 						<br />
 						<nav class="navbar navbar-dark bg-dark">
 							<ul class="navbar-nav">
-								@foreach (Film movie in Utililies.Get5Movies(db))
+								@foreach (Film movie in await Utililies.GetRentalMoviesAsync(db))
 								{
 									<li class="nav-item active">
 										<a class="nav-link" href="../film/@movie.IdFilm">@movie.Title</a>

@@ -4,9 +4,105 @@
 @{
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	ViewBag.Title = "Main";
+	var rentalMovies = await Utililies.GetRentalMoviesAsync(db);
+	var first = true;
 }
+@using KinoSystem.Models.Utilities;
+@using KinoSystem.Models.Database;
+@inject KinoDBContext db
 
 <div>
-	<h1 class="text-white">Main page</h1>
-	
+	<div class="d-flex flex-column">
+
+		<h1 class="text-white align-self-center mb-4">Фильмы</h1>
+	</div>
+
+	<div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+		<div class="carousel-inner">
+			@foreach (var movie in rentalMovies)
+			{
+				@if (first)
+				{
+					<div class="carousel-item text-white active" data-bs-interval="10000">
+						<div class="container">
+							<div class="row">
+								<div class="col-3 col-md-3">
+									<img src="@movie.UrlPoster" class="d-block w-100" height="600" width="400">
+								</div>
+								<div class="col-9 col-md-9">
+									<dl class="row">
+										<dt class="col-3 col-md-3">
+											Название
+										</dt>
+										<dd class="col-9 col-md-9">
+											@movie.Title
+										</dd>
+									</dl>
+									<dl class="row">
+										<dt class="col-3 col-md-3">
+											Описание
+										</dt>
+										<dd class="col-9 col-md-9">
+											@movie.Description
+										</dd>
+									</dl>
+									<div class="d-flex flex-column">
+										<a class="btn btn-outline-primary w-25 align-self-center mt-4" href="film/@movie.IdFilm">Информация о фильме</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					{
+						first = false;
+					}
+				}
+				else
+				{
+					<div class="carousel-item text-white container-fluid" data-bs-interval="10000">
+						<div class="container">
+
+							<div class="row">
+								<div class="col-3 col-md-3">
+									<img src="@movie.UrlPoster" class="d-block w-100" height="600" width="400">
+								</div>
+								<div class="col-9 col-md-9">
+									<dl class="row">
+										<dt class="col-3 col-md-3">
+											Название
+										</dt>
+										<dd class="col-9 col-md-9">
+											@movie.Title
+										</dd>
+									</dl>
+									<dl class="row">
+										<dt class="col-3 col-md-3">
+											Описание
+										</dt>
+										<dd class="col-9 col-md-9">
+											@movie.Description
+										</dd>
+									</dl>
+									<div class="d-flex flex-column">
+										<a class="btn btn-outline-primary w-25 align-self-center mt-4" href="film/@movie.IdFilm">Информация о фильме</a>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+					</div>
+
+				}
+			}
+		</div>
+		<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Previous</span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Next</span>
+		</button>
+	</div>
 </div>

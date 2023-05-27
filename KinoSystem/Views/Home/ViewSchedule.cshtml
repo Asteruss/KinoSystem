@@ -30,22 +30,12 @@
         {
                     <tr>
                         <td class="text-white">@session.Start</td>
-                        <td class="text-white">@session.Session.Film.Title</td>
+                        <td class="text-white"><a href="../film/@session.Session.Film.IdFilm">@session.Session.Film.Title</a></td>
                         <td class="text-white">@session.Session.Hall.NameHall зал</td>
                         <td class="text-white">@session.Session.Price рублей</td>
-                        <td class="text-white"><a class="btn btn-success" href="../film/buyticket/@session.Session.Film.IdFilm">Купить билет</a></td>
+                        <td class="text-white"><a class="btn btn-success" href="../film/buyticket/@session.Session.IdSesstion">Купить билет</a></td>
                     </tr>                    
                
-            @*<div class="row">
-
-                <div class="col-4 col-md-4">
-                    <p class="text-white bg-dark">@session.Start</p>
-                </div>
-                <div class="col-8 col-md-8">
-                    <p class="text-white bg-dark">@session.Session.Film.Title</p>
-
-                </div>
-            </div>*@
         }
             </tbody>
         </table>

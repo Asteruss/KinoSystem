@@ -1,0 +1,65 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = "Билеты";
+}
+@using KinoSystem.Models;
+@using KinoSystem.Models.Utilities;
+@model Session
+<div>
+	<form method="post" action="/film/buyticket/@Model.IdSesstion">
+
+		<div class="btn-group-toggle container-fluid" data-toggle="buttons">
+			@foreach (Row row in Model.Hall.Rows)
+			{
+				<div class="row">
+					<span class="mx-2 text-white col-1 col-md-1">@row.Number ряд</span>
+					<span class="col-11 col-md-11">
+						@foreach (Seat seat in row.Seats)
+						{
+							@if (seat.Person == null)
+							{
+								<input type="checkbox" class="btn-check" autocomplete="off" id="@seat.IdSeat" name="options">
+								<label class="btn btn-outline-light m-0" for="@seat.IdSeat">@seat.Number</label>
+
+							}
+							else
+							{
+								<input type="checkbox" class="btn-check" autocomplete="off" disabled id="@seat.IdSeat">
+								<label class="btn btn-secondary m-0 disabled" for="@seat.IdSeat">@seat.Number</label>
+
+							}
+						}
+					</span>
+				</div>
+				<br />
+			}
+		</div>
+		<div class="d-flex flex-column">
+			<input type="submit" class="btn btn-primary form-control text-light bg-dark w-25 align-self-center mt-4" value="Купить" onclick="AddSeat()" />
+		</div>
+	</form>
+	<script type="text/javascript">
+		function AddSeat() {
+			var seats = document.forms[1];
+			
+			const seatsTaken = []
+			for (i = 0; i < seats.length; i++) {
+				if (seats[i].checked) {
+					seatsTaken.push(seats[i].id)
+				}
+			}
+			var res = seatsTaken.join("|");
+			var date = Date.now() + new Date(0, 0, 0, 14, 0, 0, 0);
+			setCookie("seats", res, 30);
+		}
+		function setCookie(cname, cvalue, exdays) {
+			const d = new Date();
+			d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+			let expires = "expires=" + d.toUTCString();
+			document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+		}
+	</script>
+</div>

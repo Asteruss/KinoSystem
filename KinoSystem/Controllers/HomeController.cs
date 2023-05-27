@@ -99,7 +99,7 @@ namespace KinoSystem.Controllers
             {
                 var claims = new List<Claim>
                     {
-                        new Claim(ClaimsIdentity.DefaultNameClaimType, pn.Login),
+                        new Claim(ClaimsIdentity.DefaultNameClaimType, pn.IdPerson.ToString()),
                         new Claim(ClaimsIdentity.DefaultRoleClaimType, pn.AccessRight.ToString())
                     };
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
@@ -133,11 +133,41 @@ namespace KinoSystem.Controllers
         {
             return View(model: await Utililies.GetMovieByIdAsync(_kinoDBContext, idFilm));
         }
+        [Authorize]
         [HttpGet]
-        [Route("film/buyticket/{idFilm:int}")]
-        public IActionResult BuyTicket(int idFilm)
+        [Route("film/buyticket/{idSession:int}")]
+        public async Task<IActionResult> BuyTicket(int idSession)
         {
-            return Content(idFilm.ToString());
+            return View(await Utililies.GetSessionByIdAsync(_kinoDBContext, idSession));
+        }
+        [Authorize]
+        [HttpPost]
+        [Route("film/buyticket/{idSession:int}")]
+        public async Task<IActionResult> BuyTicket(int idSession, Session s)
+        {
+            var takenSeats = HttpContext.Request.Cookies["seats"];
+            if (string.IsNullOrEmpty(takenSeats))
+            {
+                return RedirectToAction("buyticket", idSession);
+            }
+            var session = await Utililies.GetSessionByIdAsync(_kinoDBContext, idSession);
+            var seatsSplit = takenSeats.Split("|").Select(s => int.Parse(s)).ToList();
+            var seats = await Utililies.GetSeatsByIdsAsync(_kinoDBContext, seatsSplit);
+            var person = await Utililies.GetPersonByIdAsync(_kinoDBContext, int.Parse(HttpContext.User.FindFirst(ClaimsIdentity.DefaultNameClaimType).Value));
+            foreach (var seat in seats)
+                seat.Person = person;
+            _kinoDBContext.Seats.UpdateRange(seats);
+            await _kinoDBContext.SaveChangesAsync();
+            for (int i =0; i < seats.Count; i++)
+            {
+                Purhaces purhace = new Purhaces();
+                purhace.Session = session;
+                purhace.Person = person;
+                purhace.PurchaseTime = DateTime.Now;
+                await _kinoDBContext.Purhaces.AddAsync(purhace);
+                await _kinoDBContext.SaveChangesAsync();
+            }     
+            return RedirectToAction("Index");
         }
         [Authorize(Roles = "Administrator")]
         [HttpGet]
@@ -147,7 +177,6 @@ namespace KinoSystem.Controllers
             if (date.Year == 1)
                 date = DateTime.Now;
             TempData["date"] = date.ToLongDateString();
-            HttpContext.Session.SetString("date", date.ToString());
             HttpContext.Session.Remove("SuccessAdd");
 
             return View();
@@ -172,7 +201,6 @@ namespace KinoSystem.Controllers
                 await _kinoDBContext.SaveChangesAsync();
                 Schedule schedule = new Schedule();
                 schedule.Session = session;
-                //schedule.IdSession = session.IdSesstion;
                 var date = DateTime.Parse(HttpContext.Session.GetString("date"));
                 var start = new DateTime(date.Year, date.Month, date.Day, addsession.Time.Hour, addsession.Time.Minute, addsession.Time.Second);
                 schedule.Start = start;
@@ -192,8 +220,11 @@ namespace KinoSystem.Controllers
             if (date.Year == 1)
                 date = DateTime.Now;
             TempData["date"] = date.ToLongDateString();
-            HttpContext.Session.SetString("date", date.ToString());
             return View();
         }
+        [Authorize]
+        [HttpGet]
+        [Route("/statistics")]
+        public async Task<IActionResult> Statistics() => View(await Utililies.GetLastPurchacesAsync(_kinoDBContext,100));
     }
 }
