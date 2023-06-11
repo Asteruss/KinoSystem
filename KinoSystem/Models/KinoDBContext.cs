@@ -17,7 +17,6 @@ namespace KinoSystem.Models.Database
         public DbSet<Purhaces> Purhaces { get; set; }
         public KinoDBContext(DbContextOptions<KinoDBContext> options) : base(options)
         {
-            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 

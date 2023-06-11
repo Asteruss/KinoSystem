@@ -78,7 +78,12 @@
                         Описание
                     </dt>
                     <dd class="col-8 col-md-8 text-white mb-2">
-                        @Model.Description
+                        @if (Model.Description != "None"){
+                            @Model.Description
+						}
+						else{
+							<span>отсутствует</span>
+						}
                     </dd>
                 </dl>
             </div>

@@ -80,7 +80,12 @@
 											Описание
 										</dt>
 										<dd class="col-9 col-md-9">
-											@movie.Description
+											@if (movie.Description != "None"){
+												@movie.Description
+											}
+											else{
+												<span>отсутствует</span>
+											}
 										</dd>
 									</dl>
 									<div class="d-flex flex-column">

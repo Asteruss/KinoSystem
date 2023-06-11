@@ -15,19 +15,21 @@ namespace KinoSystem.Controllers
     {
         private readonly KinoDBContext _kinoDBContext;
         private readonly ILogger<HomeController> _logger;
-        public HomeController(KinoDBContext db, ILogger<HomeController> logger)
+        private readonly IConfiguration _configuration;
+        public HomeController(KinoDBContext db, ILogger<HomeController> logger, IConfiguration configuration)
         {
             _logger = logger;
             _kinoDBContext = db;
-
-            Utililies.LoadMovies(_kinoDBContext);
+            _configuration = configuration;
 
         }
         [Route("/")]
         [Route("/Index")]
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            await Utililies.LoadMovies(_kinoDBContext);
+
             //_logger.LogInformation($"\nCount = {_kinoDBContext.People.ToList().Count}\n");
             return View();
         }
