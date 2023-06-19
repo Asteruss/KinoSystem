@@ -228,5 +228,16 @@ namespace KinoSystem.Controllers
         [HttpGet]
         [Route("/statistics")]
         public async Task<IActionResult> Statistics() => View(await Utililies.GetLastPurchacesAsync(_kinoDBContext,100));
+        [HttpGet]
+        [Route("cashier/add")]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult AddCahier() => View("AddCashireView");
+        [HttpPost]
+        [Route("cashier/add")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> AddCashier(Person cashier)
+        {
+            return RedirectToAction("Index");
+        }
     }
 }

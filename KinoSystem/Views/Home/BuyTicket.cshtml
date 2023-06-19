@@ -5,8 +5,7 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	ViewBag.Title = "Билеты";
 }
-@using KinoSystem.Models;
-@using KinoSystem.Models.Utilities;
+
 @model Session
 <div>
 	<form method="post" action="/film/buyticket/@Model.IdSesstion">

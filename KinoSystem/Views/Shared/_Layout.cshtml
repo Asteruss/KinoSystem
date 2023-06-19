@@ -2,8 +2,6 @@
 
 @inject IHttpContextAccessor HttpContextAccessor
 @inject KinoSystem.Models.Database.KinoDBContext db
-@using KinoSystem.Models.Utilities;
-@using KinoSystem.Models;
 @using System.Security.Claims;
 <html>
 <head>
@@ -63,6 +61,7 @@
 				{
 						<a class="btn btn-light text-dark mt-2" style="width:250px" href="../schedule/edit">Добавить фильм в расписание</a>
 						<a class="btn btn-light text-dark mt-2" style="width:250px" href="../statistics">Просмотреть доходы</a>
+@*						<a class="btn btn-light text-dark mt-2" style="width:250px" href="../cashier/add">Добавить кассира</a>*@
 
 				}
 				else
